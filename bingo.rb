@@ -1,28 +1,12 @@
 class Bingo
-  BINGO_MAPS = %w(B I N G O)
-  ROW_NUMBER = 6
-  ROW_RANGE = 15
-
   def self.generate_card
-    card = ''
-    ROW_NUMBER.times do |row_index|
-      BINGO_MAPS.each_with_index{|item, col_index|
-        boundary = col_index == BINGO_MAPS.size - 1 ? '' : ' | '
-        str = ''
-        unless row_index == ROW_NUMBER / 2 && col_index == (BINGO_MAPS.size / 2).ceil
-          str =  row_index == 0 ? item : self.generate_number(col_index + 1, card).to_s
-        end
-        card += "%2s" % str + boundary
-      }
-      card += "\n"
-    end
-    card
-  end
+    cols = (1..75).each_slice(15).map { |col| col.sample(5) }
+    cols[2][2] = ""
 
-  def self.generate_number(index, inspection)
-    number = index * ROW_RANGE - rand(ROW_RANGE - 1)
-    return self.generate_number(index, inspection) if inspection.include?("#{'%2s' % number.to_s}")
-    number
+    table = ["BINGO".chars] + cols.transpose
+    table.map { |row|
+      row.map { |cell| cell.to_s.rjust(2) }.join(" | ")
+    }.join("\n")
   end
 
   def self.sample
@@ -36,3 +20,5 @@ class Bingo
     CARD
   end
 end
+
+Bingo.generate_card
